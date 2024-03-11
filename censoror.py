@@ -3,7 +3,7 @@ import glob
 import os
 import sys
 import re
-from assignment1.censor_functions import censor_phone_numbers, censor_dates, censor_names, censor_emails, censor_addresses
+from assignment1.main import censor_phone_numbers, censor_dates, censor_names, censor_emails, censor_addresses
 
 def process_text(text, options):
     if options['names']:
