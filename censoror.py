@@ -4,6 +4,7 @@ import os
 import sys
 import re
 from assignment1.main import censor_phone_numbers, censor_dates, censor_names, censor_emails, censor_addresses
+from pathlib import Path
 
 def process_text(text, options):
     if options['names']:
@@ -20,16 +21,20 @@ def process_text(text, options):
 
 def process_files(input_pattern, output_dir, options, stats_flag):
     stats = {'files_processed':0, 'characters_censored':0}
+    output_dir_path = Path(output_dir) / "gradescopetestsout"
+    output_dir_path.mkdir(parents=True, exist_ok=True)
+
     for file_path in glob.glob(input_pattern, recursive=True):
         with open(file_path, 'r', encoding = 'utf-8') as file:
             content = file.read()
+
         #original_content_length = len(content)
         censored_content = process_text(content, options)
         #stats['characters_censored'] += original_content_length - len(censored_content)
         censored_character_count = censored_content.count('#')
         stats['characters_censored'] += censored_character_count
 
-        output_file_path = os.path.join(output_dir, os.path.basename(file_path) + '.censored')
+        output_file_path = output_dir_path /(Path(file_path).name + '.censored')
         with open(output_file_path, 'w', encoding='utf-8') as file:
             file.write(censored_content)
         stats['files_processed'] += 1
