@@ -3,10 +3,10 @@
 
 # Overview
 In this assignment, we censor sensitive information like names, dates, phone numbers and address from the user inputted plaintext file. I am replacing the information with '#' key. THe program must be run using the command
-# pipenv run python censoror.py --input '*.txt' \
-#                    --names --dates --phones --address\
-#                    --output 'files/' \
-#                    --stats stderr
+` pipenv run python censoror.py --input '*.txt' \
+                    --names --dates --phones --address\
+                    --output 'files/' \
+                    --stats stderr`
 where --input parameter takes a glob(files that can be accepted) with more than one input being accepted and the --output ,specifying the directory to store all the censored files, will be written to text files(irrespective of input type) with the name being original filename.censored . Incase the input file cannot be processed or censored we display an error message for the same. 
 
 # main.py
