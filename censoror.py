@@ -3,7 +3,7 @@ import glob
 import os
 import sys
 import re
-from assignment1.main import censor_phone_numbers, censor_dates, censor_names, censor_emails, censor_addresses
+from assignment1.main import censor_phone_numbers, censor_dates, censor_names,  censor_addresses
 from pathlib import Path
 
 def process_text(text, flags):

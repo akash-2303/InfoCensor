@@ -4,7 +4,8 @@ import pyap
 from dateparser import parse
 
 # Load Spacy NLP model
-nlp = spacy.load("en_core_web_lg")
+# nlp = spacy.load("en_core_web_lg")
+nlp = spacy.load("en_core_web_trf")
 
 def censor_phone_numbers(content):
     patterns = [
@@ -38,9 +39,9 @@ def censor_names(content):
             content = content.replace(ent.text, '#' * len(ent.text))
     return content
 
-def censor_emails(content):
-    email_regex = r'([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,4})'
-    return re.sub(email_regex, lambda match: '#' * len(match.group(1)) + '@' + match.group(2), content)
+# def censor_emails(content):
+#     email_regex = r'([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,4})'
+#     return re.sub(email_regex, lambda match: '#' * len(match.group(1)) + '@' + match.group(2), content)
 
 def censor_addresses(content):
     addresses = pyap.parse(content, country='US')
