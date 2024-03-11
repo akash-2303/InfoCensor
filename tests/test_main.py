@@ -1,5 +1,5 @@
 import pytest
-from assignment1.main import censor_phone_numbers, censor_dates, censor_names, censor_emails, censor_addresses
+from assignment1.main import censor_phone_numbers, censor_dates, censor_names, censor_addresses
 
 def test_censor_phone_numbers():
     text = "My phone number is (123) 456-7890. Call me at 1234567890 or +1 (213)-233-1234 or +1(213)-233-1234"
