@@ -20,30 +20,35 @@ def process_text(text, options):
     return text
 
 def process_files(input_pattern, output_dir, options, stats_flag):
-    stats = {'files_processed':0, 'characters_censored':0}
+    stats = {'files_processed': 0, 'characters_censored': 0, 'errors': 0}
     output_dir_path = Path(output_dir) / "gradescopetestsout"
     output_dir_path.mkdir(parents=True, exist_ok=True)
 
     for file_path in glob.glob(input_pattern, recursive=True):
-        with open(file_path, 'r', encoding = 'utf-8') as file:
-            content = file.read()
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
 
-        #original_content_length = len(content)
-        censored_content = process_text(content, options)
-        #stats['characters_censored'] += original_content_length - len(censored_content)
-        censored_character_count = censored_content.count('#')
-        stats['characters_censored'] += censored_character_count
+            censored_content = process_text(content, options)
+            censored_character_count = censored_content.count('#')
+            stats['characters_censored'] += censored_character_count
 
-        output_file_path = output_dir_path /(Path(file_path).name + '.censored')
-        with open(output_file_path, 'w', encoding='utf-8') as file:
-            file.write(censored_content)
-        stats['files_processed'] += 1
+            output_file_path = output_dir_path / (Path(file_path).name + '.censored')
+            with open(output_file_path, 'w', encoding='utf-8') as file:
+                file.write(censored_content)
+            stats['files_processed'] += 1
+        except Exception as e:
+            print(f"Error processing file {file_path}: {e}", file=sys.stderr if stats_flag == 'stderr' else sys.stdout)
+            stats['errors'] += 1
 
-    stats_message = f"Files processed: {stats['files_processed']}\nCharacters censored: {stats['characters_censored']}"
+    stats_message = (f"Files processed: {stats['files_processed']}\n"
+                     f"Characters censored: {stats['characters_censored']}\n"
+                     f"Errors: {stats['errors']}")
     if stats_flag == 'stderr':
-        sys.stderr.write(stats_message)
+        sys.stderr.write(stats_message + '\n')
     elif stats_flag == 'stdout':
-        sys.stdout.write(stats_message)
+        sys.stdout.write(stats_message + '\n')
+
 
 def main():
     parser = argparse.ArgumentParser(description='Censor sensitive information from text files')
