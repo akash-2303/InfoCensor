@@ -17,7 +17,7 @@ def test_censor_names():
     assert censor_names(text) == expected
 
 # def test_censor_emails():
-#     text = "My email is jane@example.com
+#     text = "My email is jane@example.com"
 #     expected = "My email is #####################."
 #     assert censor_emails(text) == expected
 

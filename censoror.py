@@ -6,20 +6,24 @@ import re
 from assignment1.main import censor_phone_numbers, censor_dates, censor_names, censor_emails, censor_addresses
 from pathlib import Path
 
-def process_text(text, options):
-    if options['names']:
+def process_text(text, flags):
+    if flags['names']:
         text = censor_names(text)
-    if options['dates']:
+    if flags['dates']:
         text = censor_dates(text)
-    if options['phones']:
+    if flags['phones']:
         text = censor_phone_numbers(text)
-    #if options['emails']:
+    #if flags['emails']:
         #text = censor_emails(text)
-    if options['address']:
+    if flags['address']:
         text = censor_addresses(text)
     return text
 
-def process_files(input_pattern, output_dir, options, stats_flag):
+from pathlib import Path
+import glob
+import sys
+
+def process_files(input_pattern, output_dir, flags, stats_flag):
     stats = {'files_processed': 0, 'characters_censored': 0, 'errors': 0}
     output_dir_path = Path(output_dir) / "gradescopetestsout"
     output_dir_path.mkdir(parents=True, exist_ok=True)
@@ -29,7 +33,7 @@ def process_files(input_pattern, output_dir, options, stats_flag):
             with open(file_path, 'r', encoding='utf-8') as file:
                 content = file.read()
 
-            censored_content = process_text(content, options)
+            censored_content = process_text(content, flags)
             censored_character_count = censored_content.count('#')
             stats['characters_censored'] += censored_character_count
 
@@ -63,14 +67,14 @@ def main():
 
     args = parser.parse_args()
     os.makedirs(args.output, exist_ok=True)
-    options = {
+    flags = {
         'names': args.names,
         'dates': args.dates,
         'phones': args.phones,
         #'emails': args.emails,
         'address': args.address
     }
-    process_files(args.input, args.output, options, args.stats)
+    process_files(args.input, args.output, flags, args.stats)
 
 if __name__ == '__main__':
     main()
