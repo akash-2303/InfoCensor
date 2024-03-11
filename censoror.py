@@ -12,30 +12,27 @@ def process_text(text, flags):
 
     if flags['names']:
         text_before = text
-        text = censor_names(text)
-        censor_stats['names'] = text.count('#') - text_before.count('#')
+        text,count = censor_names(text)
+        censor_stats['names'] = count
 
     if flags['dates']:
         text_before = text
-        text = censor_dates(text)
-        censor_stats['dates'] = text.count('#') - text_before.count('#')
+        text,count = censor_dates(text)
+        censor_stats['dates'] = count
 
     if flags['phones']:
         text_before = text
-        text = censor_phone_numbers(text)
-        censor_stats['phones'] = text.count('#') - text_before.count('#')
+        text,count = censor_phone_numbers(text)
+        censor_stats['phones'] = count
     #if flags['emails']:
         #text = censor_emails(text)
     if flags['address']:
         text_before = text
-        text = censor_addresses(text)
-        censor_stats['address'] = text.count('#') - text_before.count('#')
+        text,count = censor_addresses(text)
+        censor_stats['address'] = count
 
     return text, censor_stats
 
-# from pathlib import Path
-# import glob
-# import sys
 
 def process_files(input_pattern, output_dir, flags, stats_flag):
     stats = {'files_processed': 0, 'characters_censored': 0, 'errors': 0}

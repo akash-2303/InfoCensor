@@ -15,7 +15,8 @@ def censor_phone_numbers(content):
         r'\+\d{1}\(\d{3}\)-\d{3}-\d{4}'  # +1(213)-233-1234
     ]
     final_re = re.compile('|'.join(patterns))
-    return re.sub(final_re, lambda match: '#' * len(match.group()), content)
+    count = len(re.findall(final_re, content))
+    return re.sub(final_re, lambda match: '#' * len(match.group()), content), count
 
 def censor_dates(content):
     date_regexes = [
@@ -30,21 +31,33 @@ def censor_dates(content):
     r'\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s\d{1,2}(?:st|nd|rd|th)?\s(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s\d{4}'
 ]
     combined_regex = '|'.join(date_regexes)
-    return re.sub(combined_regex, lambda match: '#' * len(match.group()), content)
+    count = len(re.findall(combined_regex, content))
+    return re.sub(combined_regex, lambda match: '#' * len(match.group()), content), count
 
 def censor_names(content):
+    count = 0
     doc = nlp(content)
     for ent in doc.ents:
         if ent.label_ == "PERSON":
+            count += 1
             content = content.replace(ent.text, '#' * len(ent.text))
-    return content
+    emails = censor_emails(content)
+    print(emails)
+    for email in emails:
+        # doc1 = nlp(email)
+        # for ent in doc1.ents:
+        #     if ent.label_ == "PERSON":
+        content = content.replace(email[0], '#' * len(email[0]))
+    return content,count
 
-# def censor_emails(content):
-#     email_regex = r'([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,4})'
-#     return re.sub(email_regex, lambda match: '#' * len(match.group(1)) + '@' + match.group(2), content)
+
+def censor_emails(content):
+    email_regex = r'([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,4})'
+    #return re.sub(email_regex, lambda match: '#' * len(match.group(1)) + '@' + match.group(2), content)
+    return re.findall(email_regex, content)
 
 def censor_addresses(content):
     addresses = pyap.parse(content, country='US')
     for address in addresses:
         content = content.replace(address.full_address, '#' * len(address.full_address))
-    return content
+    return content, len(addresses)
