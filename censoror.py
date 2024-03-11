@@ -25,8 +25,8 @@ import sys
 
 def process_files(input_pattern, output_dir, flags, stats_flag):
     stats = {'files_processed': 0, 'characters_censored': 0, 'errors': 0}
-    output_dir_path = Path(output_dir) / "gradescopetestsout"
-    output_dir_path.mkdir(parents=True, exist_ok=True)
+    # output_dir_path = Path(output_dir) / ""
+    # output_dir_path.mkdir(parents=True, exist_ok=True)
 
     for file_path in glob.glob(input_pattern, recursive=True):
         try:
@@ -37,7 +37,9 @@ def process_files(input_pattern, output_dir, flags, stats_flag):
             censored_character_count = censored_content.count('#')
             stats['characters_censored'] += censored_character_count
 
-            output_file_path = output_dir_path / (Path(file_path).name + '.censored')
+            file_base_name = os.path.basename(file_path)
+            output_file_path = os.path.join(output_dir, file_base_name + '.censored')
+
             with open(output_file_path, 'w', encoding='utf-8') as file:
                 file.write(censored_content)
             stats['files_processed'] += 1
@@ -52,13 +54,16 @@ def process_files(input_pattern, output_dir, flags, stats_flag):
         sys.stderr.write(stats_message + '\n')
     elif stats_flag == 'stdout':
         sys.stdout.write(stats_message + '\n')
+    else:
+        with open(stats_flag, 'w') as stats_file:
+            stats_file.write(stats_message)
 
 
 def main():
     parser = argparse.ArgumentParser(description='Censor sensitive information from text files')
     parser.add_argument('--input', type=str, required=True, help='Glob pattern for input files')
     parser.add_argument('--output', type=str, required=True, help='Output directory')
-    parser.add_argument('--stats', choices=['stdout', 'stderr'], required=True, help='Where to write stats')
+    parser.add_argument('--stats', required=True, help='Where to write stats')
     parser.add_argument('--names', action='store_true', help='Censor names')
     parser.add_argument('--dates', action='store_true', help='Censor dates')
     parser.add_argument('--phones', action='store_true', help='Censor phone numbers')
