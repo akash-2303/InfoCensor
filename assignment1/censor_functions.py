@@ -1,5 +1,3 @@
-# censor_functions.py
-
 import re
 import spacy
 import pyap
