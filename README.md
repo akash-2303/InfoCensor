@@ -233,6 +233,12 @@ I did make some assumptions whilst writing the code. Only english use cases. For
 As for bugs, phone numbers that are not of the three mostly used US format will not be detected. Numbers that might have dots instead of space for instance, will not get flagged and censored. Numbers without area codes will also fail to get censored. Similarly not all date formats are recognized. Dates that mention a rangle like 2002 - 2004 and formats like 3rd of March are not getting detected by the regex. Also in some cases, abbreviations like tue, might fail to get recognized. In the sample output, the month and year were succesfully detected and censored but 'Tuesday' was not censored. As for names, parts of names like oe, Doe are sometimes failing. Also foreign names wont get recognized. 
 
 # How to Run
+
+
+https://github.com/akash-2303/cis6930sp24-assignment1/assets/67377539/25032665-5d44-4285-9b2b-01b290f29aa4
+
+
+
 To run pytest, simply use
 `pytest`
 
