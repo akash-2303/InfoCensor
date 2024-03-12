@@ -42,7 +42,7 @@ def censor_names(content):
             count += 1
             content = content.replace(ent.text, '#' * len(ent.text))
     emails = censor_emails(content)
-    print(emails)
+    # print(emails)
     for email in emails:
         # doc1 = nlp(email)
         # for ent in doc1.ents:
