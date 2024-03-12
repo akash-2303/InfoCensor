@@ -46,7 +46,7 @@ def process_files(input_pattern, output_dir, flags, stats_flag):
                 content = file.read()
 
             censored_content, file_censor_stats = process_text(content, flags)
-            censored_character_count = censored_content.count('#')
+            censored_character_count = censored_content.count('\u2588')
             stats['characters_censored'] += censored_character_count
             detailed_stats.append((file_path, file_censor_stats))
 
@@ -80,7 +80,6 @@ def process_files(input_pattern, output_dir, flags, stats_flag):
     else:
         with open(stats_flag, 'a') as stats_file:
             stats_file.write(summary_stats_message + '\n')
-
 
 def main():
     parser = argparse.ArgumentParser(description='Censor sensitive information from text files')

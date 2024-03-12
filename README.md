@@ -2,7 +2,7 @@
 # Contents
 
 # Overview
-In this assignment, we censor sensitive information like names, dates, phone numbers and address from the user inputted plaintext file. I am replacing the information with '#' key. THe program must be run using the command
+In this assignment, we censor sensitive information like names, dates, phone numbers and address from the user inputted plaintext file. I am replacing the information with '\u2588' key. THe program must be run using the command
 ` pipenv run python censoror.py --input '*.txt' \
                     --names --dates --phones --address\
                     --output 'files/' \
@@ -17,7 +17,7 @@ main.py contains the following functions:
 censor_phone_numbers
 def censor_phone_numbers(content):
     """
-    Censors phone numbers in the given content by replacing them with '#' characters. This was done using regular expressions and can identify phone numbers in various formats like 
+    Censors phone numbers in the given content by replacing them with '\u2588' characters. This was done using regular expressions and can identify phone numbers in various formats like 
     (555) 123-4567
     1234567890
     +1 (213)-233-1234
@@ -27,13 +27,13 @@ def censor_phone_numbers(content):
         content (str): The content to be censored.
 
     Returns:
-        str: The censored content with phone numbers replaced by '#' characters.
+        tuple: A tuple containing the censored content and the count of phone numbers censored.
     """
 
 censor_dates
 def censor_dates(content):
     """
-    Censors dates in the given content by replacing them with '#' characters. Once again used regular expressions to detect a wide range of date formats like
+    Censors dates in the given content by replacing them with '\u2588' characters. Once again used regular expressions to detect a wide range of date formats like
     Mon, 12 January 2021 14:30:00 +0200 (EST)
     12/31/2020
     2020-12-31
@@ -45,7 +45,7 @@ def censor_dates(content):
         content (str): The content to be censored.
 
     Returns:
-        str: The censored content with dates replaced by '#'.
+        tuple: A tuple containing the censored content and the count of dates censored.
 
     """
 
@@ -62,7 +62,7 @@ def censor_names(content):
         content (str): The content to be censored.
 
     Returns:
-        str: The censored content.
+        tuple: A tuple containing the censored content (str) and the count of names censored (int).
     """
 
 censor_emails
@@ -74,14 +74,14 @@ ef censor_emails(content):
         content (str): The content to be censored.
 
     Returns:
-        str: The censored content with email addresses replaced by '#' characters.
+        list: A list of email addresses found in the content. Is not an individual flag but is used by name function. 
 
     """
 
 censor_addresses
 def censor_addresses(content):
     """
-    Censors addresses in the given content by replacing them with '#' characters. For detecting addresses, I used a library called PyAP to parse and extract street addresses from the given text. It can handle addresses of various formats like
+    Censors addresses in the given content by replacing them with '\u2588' characters. For detecting addresses, I used a library called PyAP to parse and extract street addresses from the given text. It can handle addresses of various formats like
     123 Main St, Anytown, CA 90210
     456 Elm Avenue, Smalltown, TX 75001
     789 Pine Blvd Apt 101, Largetown, FL 33101
@@ -90,7 +90,7 @@ def censor_addresses(content):
         content (str): The content to be censored.
 
     Returns:
-        str: The censored content with addresses replaced by '#' characters.
+        tuple: A tuple containing the censored content and the number of addresses censored.
     """
 
 # censoror.py
@@ -156,13 +156,12 @@ This script is a suite of unit tests designed to validate the effectiveness of t
 test_censor_phone_numbers
 def test_censor_phone_numbers():
     """
-    Test case for the censor_phone_numbers function.
-
     This test case checks if the censor_phone_numbers function correctly censors phone numbers in a given text.
 
+    It compares the censored text and the count of censored phone numbers with the expected values.
     The text contains multiple phone numbers in different formats, including with and without parentheses, dashes, and country codes.
 
-    The expected output is a string where all phone numbers are replaced with a series of '#' characters.
+    The expected output is a string where all phone numbers are replaced with a series of '\u2588' characters and it checks if the count matches. .
 
     Example:
     Input:
@@ -174,12 +173,10 @@ def test_censor_phone_numbers():
 test_censor_dates
 def test_censor_dates():
     """
-    Test case for the censor_dates function.
-
     This test case checks if the censor_dates function correctly censors dates in a given text.
-
+    It verifies that the censored text matches the expected text and that the count of censored dates is correct.
     The text contains multiple date formats, such as "01/01/2000", "2000-01-01", and "January 1st, 2000".
-    The expected output is a text with the dates censored, represented by a series of '#' characters.
+    The expected output is a text with the dates censored, represented by a series of '\u2588' characters.
 
     Example:
     Input:
@@ -194,39 +191,33 @@ def test_censor_dates():
 test_censor_names:
 def test_censor_names():
     """
-    Test case for the censor_names function.
-
     This test case checks if the censor_names function correctly censors names in a given text.
-
+    The expected behavior is that the censor_names function should replace any occurrence of a name in the text with a series of '\u2588' characters of the same length as the name.
     The text contains a name "John Doe" which should be censored to "########".
 
     The expected output is "My name is ######## and I live in New York".
 
     """
-
-test_censor_emails
-def test_censor_emails():
-    """
-    Test case for the censor_emails function.
-
-    This test case checks if the censor_emails function correctly censors email addresses in a given text.
-
-    The text contains an email address "jane@example.com". The expected output is the same text with the email address censored, i.e., "#####################".
-
-    The assert statement checks if the actual output from the censor_emails function matches the expected output.
+    assert censor_dates(text) == expected
 
 test_censor_address
 def test_censor_addresses():
     """
-    Test case for the censor_addresses function.
-
     This test case checks if the censor_addresses function correctly censors the addresses in the given text.
+    It verifies that the censored text matches the expected text and that the count of censored addresses is correct. 
+    The expected result is the same text with the address censored, represented by a series of '\u2588' characters.
 
-    The text contains an address in the format "350 Fifth Avenue, New York, NY 10118".
-    The expected result is the same text with the address censored, represented by a series of '#' characters.
-
+    assert censor_dates(text) == expected
     """
 
 # stats
+To display the statistics regarding how many details have been censored, I initialized count and kept incremented it as we keep detecting new entries of the fields the user enters. I took a random file from the dataset, 11.txt, to check the code in local environment and got the output in the following format
 
-# Bugs and Assumptions
+`11.txt: Names censored: 40, Dates censored: 4, Phones censored: 1, Addresses censored: 0
+Files processed: 1
+Characters censored: 396
+Errors: 0`
+
+
+# Assumptions and Bugs
+I did make some assumptions whilst writing the code. 

@@ -9,14 +9,14 @@ nlp = spacy.load("en_core_web_trf")
 
 def censor_phone_numbers(content):
     patterns = [
-        r'\(\d{3}\) \d{3}-\d{4}',  # (555) 123-4567
-        r'\d{10}',  # 1234567890
-        r'\+\d{1} \(\d{3}\)-\d{3}-\d{4}',  # +1 (213)-233-1234
-        r'\+\d{1}\(\d{3}\)-\d{3}-\d{4}'  # +1(213)-233-1234
+        r'\(\d{3}\) \d{3}-\d{4}',  
+        r'\d{10}',  
+        r'\+\d{1} \(\d{3}\)-\d{3}-\d{4}',  
+        r'\+\d{1}\(\d{3}\)-\d{3}-\d{4}'  
     ]
     final_re = re.compile('|'.join(patterns))
     count = len(re.findall(final_re, content))
-    return re.sub(final_re, lambda match: '#' * len(match.group()), content), count
+    return re.sub(final_re, lambda match: '\u2588' * len(match.group()), content), count
 
 def censor_dates(content):
     date_regexes = [
@@ -32,7 +32,7 @@ def censor_dates(content):
 ]
     combined_regex = '|'.join(date_regexes)
     count = len(re.findall(combined_regex, content))
-    return re.sub(combined_regex, lambda match: '#' * len(match.group()), content), count
+    return re.sub(combined_regex, lambda match: '\u2588' * len(match.group()), content), count
 
 def censor_names(content):
     count = 0
@@ -40,24 +40,24 @@ def censor_names(content):
     for ent in doc.ents:
         if ent.label_ == "PERSON":
             count += 1
-            content = content.replace(ent.text, '#' * len(ent.text))
+            content = content.replace(ent.text, '\u2588' * len(ent.text))
     emails = censor_emails(content)
     # print(emails)
     for email in emails:
         # doc1 = nlp(email)
         # for ent in doc1.ents:
         #     if ent.label_ == "PERSON":
-        content = content.replace(email[0], '#' * len(email[0]))
+        content = content.replace(email[0], '\u2588' * len(email[0]))
     return content,count
 
 
 def censor_emails(content):
     email_regex = r'([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,4})'
-    #return re.sub(email_regex, lambda match: '#' * len(match.group(1)) + '@' + match.group(2), content)
+    #return re.sub(email_regex, lambda match: '\u2588' * len(match.group(1)) + '@' + match.group(2), content)
     return re.findall(email_regex, content)
 
 def censor_addresses(content):
     addresses = pyap.parse(content, country='US')
     for address in addresses:
-        content = content.replace(address.full_address, '#' * len(address.full_address))
+        content = content.replace(address.full_address, '\u2588' * len(address.full_address))
     return content, len(addresses)
