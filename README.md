@@ -1,5 +1,12 @@
 # cis6930sp24-assignment1
 # Contents
+Overview
+main.py
+censoror.py
+test_main.py
+stats
+Assumptions and bugs
+How to run
 
 # Overview
 In this assignment, we censor sensitive information like names, dates, phone numbers and address from the user inputted plaintext file. I am replacing the information with '\u2588' key. THe program must be run using the command
@@ -52,7 +59,7 @@ def censor_dates(content):
 censor_names
 def censor_names(content):
     """
-    Censors names in the given content. Acheived this by using spaCy's NER model en_core_web_lg to detect names. Can detect names with various combinatiosn and even middle names, and names with prefixes like
+    Censors names in the given content. Acheived this by using spaCy's NER model en_core_web_trf to detect names. Can detect names with various combinations and even middle names, and names with prefixes like
     John Doe
     Trent-Alexander Arnold
     Dr. Sarah Connor
@@ -85,6 +92,7 @@ def censor_addresses(content):
     123 Main St, Anytown, CA 90210
     456 Elm Avenue, Smalltown, TX 75001
     789 Pine Blvd Apt 101, Largetown, FL 33101
+    Also there were a few addresses that pyap failed to recognize so I also used spaCy as a double check to make sure no addresses get missed. 
 
     Args:
         content (str): The content to be censored.
@@ -220,4 +228,17 @@ Errors: 0`
 
 
 # Assumptions and Bugs
-I did make some assumptions whilst writing the code. 
+I did make some assumptions whilst writing the code. First major assumption is, addresses are only US addresses. pyap library and the spaCy transformer model only have US addresses so anything else might fail. Also I assumed all email usernames are sensitive and did not check if the username contains a name or if it was abstract. Also we are assuming there wont be any foreign names that dont follow the same scripting style. 
+
+As for bugs, phone numbers that are not of the three mostly used US format will not be detected. Numbers that might have dots instead of space for instance, will not get flagged and censored. Numbers without area codes will also fail to get censored. Similarly not all date formats are recognized. Dates that mention a rangle like 2002 - 2004 and formats like 3rd of March are not getting detected by the regex. Also in some cases, abbreviations like tue, might fail to get recognized. In the sample output, the month and year were succesfully detected and censored but 'Tuesday' was not censored. As for names, parts of names like oe, Doe are sometimes failing. Also foreign names wont get recognized. 
+
+# How to Run
+To run pytest, simply use
+`pytest`
+
+And to execute the program, use
+`pipenv run python censoror.py --input '*.txt' \
+                    --names --dates --phones --address\
+                    --output 'files/' \
+                    --stats stderr`
+where files is the name of the directory you want your output to get stored in. 

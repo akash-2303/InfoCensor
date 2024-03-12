@@ -66,7 +66,6 @@ def censor_addresses(content):
         content = content.replace(address.full_address, '\u2588' * len(address.full_address))
         count += 1
     addresses = nlp(content)
-    
     #print(addresses.ents)
     for ent in addresses.ents:
         if ent.label_ == "GPE":
