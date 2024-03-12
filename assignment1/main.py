@@ -2,6 +2,8 @@ import re
 import spacy
 import pyap
 from dateparser import parse
+# from transformers import pipeline
+# pipe = pipeline("token-classification", model="ctrlbuzz/bert-addresses")
 
 # Load Spacy NLP model
 # nlp = spacy.load("en_core_web_lg")
@@ -58,6 +60,16 @@ def censor_emails(content):
 
 def censor_addresses(content):
     addresses = pyap.parse(content, country='US')
+    count = 0
     for address in addresses:
+        print(address)
         content = content.replace(address.full_address, '\u2588' * len(address.full_address))
-    return content, len(addresses)
+        count += 1
+    addresses = nlp(content)
+    
+    #print(addresses.ents)
+    for ent in addresses.ents:
+        if ent.label_ == "GPE":
+            count += 1
+            content = content.replace(ent.text, '\u2588' * len(ent.text))
+    return content, count
